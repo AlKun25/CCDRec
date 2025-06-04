@@ -68,9 +68,9 @@ if __name__ == "__main__":
 
             # Un-comment the other two if you want to generate training and validation datasets for your task
 
-            ranking_no_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users)
-            ranking_no_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
-            ranking_no_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
+            ranking_no_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users, args.prompt_context)
+            ranking_no_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), args.prompt_context)
+            ranking_no_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), args.prompt_context)
 
     # Evaluation GPT model on the test dataset
     if "gemma" in args.model_name:

@@ -1,12 +1,18 @@
+import os
 import pandas as pd
 import random
+from dotenv import load_dotenv
+
+load_dotenv()
+
+base_dir = os.getenv('BASE_DIR')
 
 NL = "\n\n"
 Q = "\'"
 
 def ranking_with_target_injection_train_dataset(k_shot, source, target, data_info, neg_samples, sampled_users, prompt_context):
-    train_df = train_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
-    source_data = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
+    train_df = train_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
+    source_data = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
     
     train_df = train_df[train_df['reviewerID'].isin(sampled_users)]
     source_data = source_data[source_data['reviewerID'].isin(sampled_users)]
@@ -80,11 +86,11 @@ def ranking_with_target_injection_train_dataset(k_shot, source, target, data_inf
         # Use concat to combine the data
         ranking_data = pd.concat([ranking_data, new_data], ignore_index=True)
 
-    ranking_data.to_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train_ranking_with_injection.csv", index=False)   
+    ranking_data.to_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train_ranking_with_injection.csv", index=False)   
 
 def ranking_no_target_injection_train_dataset(k_shot, source, target, data_info, neg_samples, sampled_users, prompt_context):
-    train_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
-    source_data = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
+    train_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
+    source_data = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
     
     train_df = train_df[train_df['reviewerID'].isin(sampled_users)]
     source_data = source_data[source_data['reviewerID'].isin(sampled_users)]
@@ -154,12 +160,12 @@ def ranking_no_target_injection_train_dataset(k_shot, source, target, data_info,
         # Use concat to combine the data
         ranking_data = pd.concat([ranking_data, new_data], ignore_index=True)
 
-    ranking_data.to_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train_ranking_no_injection.csv", index=False)   
+    ranking_data.to_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train_ranking_no_injection.csv", index=False)   
 
 def ranking_with_target_injection_validation_dataset(k_shot, source, target, data_info, neg_samples, prompt_context):
-    train_df = train_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
-    source_data = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
-    validation_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation.csv")
+    train_df = train_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
+    source_data = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
+    validation_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation.csv")
 
     # Create an empty dataframe to store prompts and correct rankings
     ranking_data = pd.DataFrame(columns=['prompt', 'correct_ranking'])
@@ -230,12 +236,12 @@ def ranking_with_target_injection_validation_dataset(k_shot, source, target, dat
         # Use concat to combine the data
         ranking_data = pd.concat([ranking_data, new_data], ignore_index=True)
 
-    ranking_data.to_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation_ranking_with_injection.csv", index=False)   
+    ranking_data.to_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation_ranking_with_injection.csv", index=False)   
 
 def ranking_no_target_injection_validation_dataset(k_shot, source, target, data_info, neg_samples, prompt_context):
-    train_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
-    source_data = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
-    validation_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation.csv")
+    train_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
+    source_data = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
+    validation_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation.csv")
 
     # Create an empty dataframe to store prompts and correct rankings
     ranking_data = pd.DataFrame(columns=['prompt', 'correct_ranking'])
@@ -302,12 +308,12 @@ def ranking_no_target_injection_validation_dataset(k_shot, source, target, data_
         # Use concat to combine the data
         ranking_data = pd.concat([ranking_data, new_data], ignore_index=True)
 
-    ranking_data.to_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation_ranking_no_injection.csv", index=False)   
+    ranking_data.to_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_validation_ranking_no_injection.csv", index=False)   
 
 def ranking_with_target_injection_test_dataset(k_shot, source, target, data_info, neg_samples, prompt_context):
-    train_df = train_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
-    source_data = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
-    test_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test.csv")
+    train_df = train_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
+    source_data = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
+    test_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test.csv")
 
     # Create an empty dataframe to store prompts and correct rankings
     ranking_data = pd.DataFrame(columns=['prompt', 'correct_ranking'])
@@ -378,12 +384,12 @@ def ranking_with_target_injection_test_dataset(k_shot, source, target, data_info
         # Use concat to combine the data
         ranking_data = pd.concat([ranking_data, new_data], ignore_index=True)
 
-    ranking_data.to_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test_ranking_with_injection.csv", index=False)   
+    ranking_data.to_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test_ranking_with_injection.csv", index=False)   
 
 def ranking_no_target_injection_test_dataset(k_shot, source, target, data_info, neg_samples, prompt_context):
-    train_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
-    source_data = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
-    test_df = pd.read_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test.csv")
+    train_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_train.csv")
+    source_data = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{source}.csv")
+    test_df = pd.read_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test.csv")
 
     # Create an empty dataframe to store prompts and correct rankings
     ranking_data = pd.DataFrame(columns=['prompt', 'correct_ranking'])
@@ -450,7 +456,7 @@ def ranking_no_target_injection_test_dataset(k_shot, source, target, data_info, 
         # Use concat to combine the data
         ranking_data = pd.concat([ranking_data, new_data], ignore_index=True)
 
-    ranking_data.to_csv(f"./few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test_ranking_no_injection.csv", index=False)   
+    ranking_data.to_csv(f"{base_dir}/few_shot_data/{k_shot}_percent/{data_info}_data/{prompt_context}/{source}_to_{target}/{target}_test_ranking_no_injection.csv", index=False)   
 
 
 
