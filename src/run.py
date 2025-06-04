@@ -4,6 +4,7 @@ import argparse
 from evaluate import evaluate_llm
 from process_data import partition_data
 from gpt_evaluate import gpt_evaluate_llm
+from ccd_evaluate import ccd_evaluate_llm
 from rating_prediction_prompts import rating_with_target_injection_train_dataset, rating_with_target_injection_validation_dataset, rating_with_target_injection_test_dataset, rating_no_target_injection_train_dataset, rating_no_target_injection_validation_dataset, rating_no_target_injection_test_dataset
 from ranking_prediction_prompts import ranking_with_target_injection_train_dataset, ranking_with_target_injection_validation_dataset, ranking_with_target_injection_test_dataset, ranking_no_target_injection_train_dataset, ranking_no_target_injection_validation_dataset, ranking_no_target_injection_test_dataset
 
@@ -29,49 +30,51 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # # # Call the main function to create dataset for the project
-    # k_sampled_users = partition_data(args.source, args.target, args.k_shot, args.data_info, args.prompt_context)
+    k_sampled_users = partition_data(args.source, args.target, args.k_shot, args.data_info, args.prompt_context)
 
-    # if args.task == "rating":
+    if args.task == "rating":
 
-    #     # Generate target injection rating prediction prompts
-    #     if args.injection == "with":
+        # Generate target injection rating prediction prompts
+        if args.injection == "with":
 
-    #         # Un-comment the other two if you want to generate training and validation datasets for your task
+            # Un-comment the other two if you want to generate training and validation datasets for your task
 
-    #         # rating_with_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, k_sampled_users)
-    #         # rating_with_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info)
-    #         rating_with_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info)
+            # rating_with_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, k_sampled_users)
+            # rating_with_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info)
+            rating_with_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info)
 
-    #     # Generate no target injection rating prediction prompts
-    #     if args.injection == "no":
+        # Generate no target injection rating prediction prompts
+        if args.injection == "no":
 
-    #         # Un-comment the other two if you want to generate training and validation datasets for your task
+            # Un-comment the other two if you want to generate training and validation datasets for your task
             
-    #         # rating_no_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, k_sampled_users)
-    #         # rating_no_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info)
-    #         rating_no_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, args.prompt_context)
+            # rating_no_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, k_sampled_users)
+            # rating_no_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info)
+            rating_no_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, args.prompt_context)
 
-    # if args.task == "ranking":
+    if args.task == "ranking":
 
-    #     # Generate target injection ranking task prompts
-    #     if args.injection == "with":
+        # Generate target injection ranking task prompts
+        if args.injection == "with":
 
-    #         # Un-comment the other two if you want to generate training and validation datasets for your task
+            # Un-comment the other two if you want to generate training and validation datasets for your task
 
-    #         # ranking_with_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users)
-    #         # ranking_with_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
-    #         ranking_with_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
+            ranking_with_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users)
+            ranking_with_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
+            ranking_with_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
 
-    #     # Generate no target injection ranking task prompts for train and test sets
-    #     if args.injection == "no":
+        # Generate no target injection ranking task prompts for train and test sets
+        if args.injection == "no":
 
-    #         # Un-comment the other two if you want to generate training and validation datasets for your task
+            # Un-comment the other two if you want to generate training and validation datasets for your task
 
-    #         # ranking_no_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users)
-    #         # ranking_no_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
-    #         ranking_no_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
+            ranking_no_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users)
+            ranking_no_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
+            ranking_no_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
 
     # Evaluation GPT model on the test dataset
+    if "gemma" in args.model_name:
+        ccd_evaluate_llm(args.k_shot, args.source, args.target, args.data_info, args.model_name, args.task, args.injection, args.prompt_context)
     if "GPT" in args.model_name:
 
         gpt_evaluate_llm(args.k_shot, args.source, args.target, args.data_info, args.model_name, args.task, args.injection, args.prompt_context)
