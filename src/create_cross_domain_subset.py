@@ -107,43 +107,44 @@ def main():
     base_path = os.getenv("BASE_DIR")
     output_dir = os.path.join(base_path, "dataset")
     os.makedirs(output_dir, exist_ok=True)
-
+    category1 = input("Enter the first category: ")
+    category2 = input("Enter the second category: ")
     # Instantiate processors
-    books = ReviewDatasetProcessor(
-        name="Books",
-        review_path=os.path.join(base_path, "data", "reviews_Books.jsonl"),
-        meta_path=os.path.join(base_path, "data", "meta_Books.jsonl"),
+    dataset1 = ReviewDatasetProcessor(
+        name=category1,
+        review_path=os.path.join(base_path, "data", f"reviews_{category1}.jsonl"),
+        meta_path=os.path.join(base_path, "data", f"meta_{category1}.jsonl"),
         output_dir=output_dir,
     )
 
-    movies = ReviewDatasetProcessor(
-        name="Movies_and_TV",
-        review_path=os.path.join(base_path, "data", "reviews_Movies_and_TV.jsonl"),
-        meta_path=os.path.join(base_path, "data", "meta_Movies_and_TV.jsonl"),
+    dataset2 = ReviewDatasetProcessor(
+        name=category2,
+        review_path=os.path.join(base_path, "data", f"reviews_{category2}.jsonl"),
+        meta_path=os.path.join(base_path, "data", f"meta_{category2}.jsonl"),
         output_dir=output_dir,
     )
 
     # Load review data
-    books.load_reviews()
-    movies.load_reviews()
+    dataset1.load_reviews()
+    dataset2.load_reviews()
 
-    # Find common users
-    common_users = set(books.reviews["reviewerID"]).intersection(
-        movies.reviews["reviewerID"]
+    # # Find common users
+    common_users = set(dataset1.reviews["reviewerID"]).intersection(
+        dataset2.reviews["reviewerID"]
     )
     print(f"\nFound {len(common_users)} users in both domains.")
 
-    # Filter both datasets to common users
-    books.filter_users(common_users)
-    movies.filter_users(common_users)
+    # # Filter both datasets to common users
+    dataset1.filter_users(common_users)
+    dataset2.filter_users(common_users)
 
-    # Keep only users with >= N reviews in each domain
+    # # Keep only users with >= N reviews in each domain
     min_reviews = 5
-    books.filter_min_reviews(min_reviews)
-    movies.filter_min_reviews(min_reviews)
+    dataset1.filter_min_reviews(min_reviews)
+    dataset2.filter_min_reviews(min_reviews)
 
-    common_active_users = set(books.filtered_reviews["reviewerID"]).intersection(
-        movies.filtered_reviews["reviewerID"]
+    common_active_users = set(dataset1.filtered_reviews["reviewerID"]).intersection(
+        dataset2.filtered_reviews["reviewerID"]
     )
 
     print(
@@ -151,26 +152,29 @@ def main():
     )
 
     # Re-filter based on updated common users
-    books.filter_users(common_active_users)
-    movies.filter_users(common_active_users)
+    dataset1.filter_users(common_active_users)
+    dataset2.filter_users(common_active_users)
 
     # Sample 10% of users
-    # sample_fraction = 0.10
-    # sampled_users = books.sample_users(common_active_users, sample_fraction)
-    # movies.sampled_reviews = movies.filtered_reviews[movies.filtered_reviews['reviewerID'].isin(sampled_users)]
+    sample_fraction = 0.10
+    # sampled_users = dataset1.sample_users(common_active_users, sample_fraction)
+    sampled_users = dataset1.sample_users(list(common_active_users), sample_fraction)
+    dataset2.filtered_reviews = dataset2.filtered_reviews[
+        dataset2.filtered_reviews["reviewerID"].isin(sampled_users)
+    ]
 
-    # print(f"\nSampled {len(sampled_users)} users ({sample_fraction*100}%)")
+    print(f"\nSampled {len(sampled_users)} users ({sample_fraction * 100}%)")
 
     # Load metadata and filter
-    books.load_metadata()
-    movies.load_metadata()
-    books.filter_metadata_by_reviews()
-    movies.filter_metadata_by_reviews()
+    dataset1.load_metadata()
+    dataset2.load_metadata()
+    dataset1.filter_metadata_by_reviews()
+    dataset2.filter_metadata_by_reviews()
 
     # Save all outputs
     print("\nSaving outputs...")
-    books.save_to_jsonl()
-    movies.save_to_jsonl()
+    dataset1.save_to_jsonl()
+    dataset2.save_to_jsonl()
 
     print("\n✅ Dataset preparation complete!")
 

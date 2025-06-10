@@ -28,7 +28,8 @@ def download_by_category(category: str, save_dir: str):
 
 def main():
     base_dir = os.getenv('BASE_DIR')
-    # download_by_category("Books", f"{base_dir}/data")
+    cat = str(input("Enter the category: "))
+    download_by_category(cat, f"{base_dir}/data")
     # download_by_category("Movies_and_TV", f"{base_dir}/data")
     # download_by_category("CDs_and_Vinyl", f"{base_dir}/data")
     # download_by_category("Electronics", f"{base_dir}/data")

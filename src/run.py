@@ -59,9 +59,9 @@ if __name__ == "__main__":
 
             # Un-comment the other two if you want to generate training and validation datasets for your task
 
-            ranking_with_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users)
-            ranking_with_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
-            ranking_with_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples))
+            ranking_with_target_injection_train_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), k_sampled_users, args.prompt_context)
+            ranking_with_target_injection_validation_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), args.prompt_context)
+            ranking_with_target_injection_test_dataset(args.k_shot, args.source, args.target, args.data_info, int(args.neg_samples), args.prompt_context)
 
         # Generate no target injection ranking task prompts for train and test sets
         if args.injection == "no":
@@ -75,14 +75,14 @@ if __name__ == "__main__":
     # Evaluation GPT model on the test dataset
     if "gemma" in args.model_name:
         ccd_evaluate_llm(args.k_shot, args.source, args.target, args.data_info, args.model_name, args.task, args.injection, args.prompt_context)
-    if "GPT" in args.model_name:
+    elif "GPT" in args.model_name:
 
         gpt_evaluate_llm(args.k_shot, args.source, args.target, args.data_info, args.model_name, args.task, args.injection, args.prompt_context)
 
     # Evaluation LLama model on the test dataset
-    else:
+    # else:
         
-        evaluate_llm(args.k_shot, args.source, args.target, args.data_info, args.model_name, args.task, args.injection, args.prompt_context)
+    #     evaluate_llm(args.k_shot, args.source, args.target, args.data_info, args.model_name, args.task, args.injection, args.prompt_context)
 
     end_time = time.time()
 
